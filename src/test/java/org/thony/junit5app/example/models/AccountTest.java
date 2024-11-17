@@ -54,9 +54,12 @@ class AccountTest {
             assertEquals(account1, account2);
         }
 
-        @Test
-        @DisplayName("igualdad de dos cuentas")
-        void DebitAccountTest() {
+        @DisplayName("Validando credito a cuenta")
+        @RepeatedTest(value = 5, name = "{displayName} - Repiticiones numero {currentRepetition} de {totalRepetitions}")
+        void DebitAccountTest(RepetitionInfo info) {
+            if (info.getCurrentRepetition() == 3 ) {
+                System.out.println("estamos en la repeticion " + info.getCurrentRepetition());
+            }
             account.debit(new BigDecimal(100));
             assertNotNull(account.getCredit());
             assertEquals(900, account.getCredit().intValue());
