@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
 
 
 class AccountTest {
@@ -149,5 +150,27 @@ class AccountTest {
     @Test
     @EnabledIfEnvironmentVariable(named = "ENVIROMENT", matches = "prod")
     void envProdTest() {
+    }
+
+    /* USE ASSUMING */
+    @Test
+    @DisplayName("CreditAccountAssuming1Test")
+    void CreditAccountAssuming1Test() {
+        boolean isDev = "dev".equals(System.getProperty("ENV"));
+        assumeTrue(isDev);
+        assertFalse(account.getCredit().compareTo(BigDecimal.ZERO) < 0);
+        assertTrue(account.getCredit().compareTo(BigDecimal.ZERO) > 0);
+    }
+
+    @Test
+    @DisplayName("CreditAccountAssuming2Test")
+    void CreditAccountAssuming2Test() {
+        boolean isDev = "dev".equals(System.getProperty("ENV"));
+        assumingThat(isDev, () -> { // validacion por ambiente de pruebas
+            assertNotNull(account.getCredit());
+            assertEquals(1000.12345, account.getCredit().doubleValue());
+        });
+        assertFalse(account.getCredit().compareTo(BigDecimal.ZERO) < 0);
+        assertTrue(account.getCredit().compareTo(BigDecimal.ZERO) > 0);
     }
 }
