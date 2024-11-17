@@ -4,10 +4,15 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.thony.junit5app.example.exceptions.InsufficientFunds;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,11 +84,36 @@ class AccountTest {
 
         @ParameterizedTest(name = "Numero {index} ejecutando con valor {0} - {argumentsWithNames}")
         @ValueSource(strings = {"100", "200", "300", "500", "700", "1000"})
-        @DisplayName("Parametrizado - Validando credito a cuenta")
+        @DisplayName("Parametrizado 1 - Validando credito a cuenta")
         void DebitAccountParameterizedTest(String amount) {
             account.debit(new BigDecimal(amount));
             assertNotNull(account.getCredit());
             assertTrue(account.getCredit().compareTo(BigDecimal.ZERO) > 0);
+        }
+
+        @ParameterizedTest(name = "Numero {index} ejecutando con valor {0} - {argumentsWithNames}")
+//        @CsvSource({"1,100", "2,200", "3,300", "4,500", "5,700", "6,1000"})
+        @CsvFileSource(resources = "/data.csv")
+        @DisplayName("Parametrizado 2 - Validando credito a cuenta")
+        void DebitAccountParameterizedCsvTest(String index, String amount) {
+            System.out.println(index + " -> " + amount);
+            account.debit(new BigDecimal(amount));
+            assertNotNull(account.getCredit());
+            assertTrue(account.getCredit().compareTo(BigDecimal.ZERO) > 0);
+        }
+
+        @ParameterizedTest(name = "Numero {index} ejecutando con valor {0} - {argumentsWithNames}")
+        @MethodSource("amountList")
+        @DisplayName("Parametrizado 3 - Validando credito a cuenta")
+        void DebitAccountParameterizedMethodTest(String amount) {
+            System.out.println("Amount " + amount);
+            account.debit(new BigDecimal(amount));
+            assertNotNull(account.getCredit());
+            assertTrue(account.getCredit().compareTo(BigDecimal.ZERO) > 0);
+        }
+
+        static List<String> amountList() {
+            return Arrays.asList("100", "200", "300", "500", "700", "1000");
         }
 
         @Test
