@@ -34,6 +34,7 @@ class AccountTest {
     }
 
     @Nested
+    @Tag("Bank")
     @DisplayName("probando atributos de la cuenta corriente")
     class accountBank {
         @Test
@@ -188,6 +189,7 @@ class AccountTest {
     }
 
     @Test
+    @Tag("Enviroment")
     @EnabledIfSystemProperty(named = "ENV", matches = "dev")
     void enviromentDevTest() {
 
@@ -200,17 +202,20 @@ class AccountTest {
     }
 
     @Test
+    @Tag("Enviroment")
     @EnabledIfEnvironmentVariable(named = "ENVIROMENT", matches = "dev")
     void envDevTest() {
     }
 
     @Test
+    @Tag("Enviroment")
     @EnabledIfEnvironmentVariable(named = "ENVIROMENT", matches = "prod")
     void envProdTest() {
     }
 
     /* CLASES anidadas usar anotacion @Nested*/
     @Nested
+    @Tag("Enviroment")
     class variablesEnviromentTest {
         /* USE ASSUMING */
         @Test
