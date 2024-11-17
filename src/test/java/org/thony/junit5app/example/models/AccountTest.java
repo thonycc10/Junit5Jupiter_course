@@ -1,22 +1,32 @@
 package org.thony.junit5app.example.models;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.thony.junit5app.example.exceptions.InsufficientFunds;
 
 import java.math.BigDecimal;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 class AccountTest {
+    Account account;
+
+    @BeforeEach
+    void beforeEach() {
+        System.out.println("Iniciando el metodo de prueba.");
+        this.account = new Account("Thony", new BigDecimal("1000.12345"));
+    }
+
+    @AfterEach
+    void afterEach() {
+        System.out.println("Finalizo el metodo de prueba.");
+    }
 
     @Test
     @DisplayName("Probando el nombre de la cuenta corriente")
     void NameAccountTest() {
-        Account account = new Account("Thony", new BigDecimal("1000.12345"));
-
         // izd: esperado - der: real
         assertEquals("Thony", account.getPerson());
         assertTrue(account.getPerson().equals("Thony"));
@@ -25,7 +35,6 @@ class AccountTest {
     @Test
     @DisplayName("Probando credito de la cuenta")
     void CreditAccountTest() {
-        Account account = new Account("Thony", new BigDecimal("1000.12345"));
         assertEquals(1000.12345, account.getCredit().doubleValue());
         assertFalse(account.getCredit().compareTo(BigDecimal.ZERO) < 0);
         assertTrue(account.getCredit().compareTo(BigDecimal.ZERO) > 0);
@@ -43,7 +52,6 @@ class AccountTest {
     @Test
     @DisplayName("Probando igualdad de dos cuentas")
     void DebitAccountTest() {
-        Account account = new Account("Thony", new BigDecimal("1000.12345"));
         account.debit(new BigDecimal(100));
         assertNotNull(account.getCredit());
         assertEquals(900, account.getCredit().intValue());
@@ -53,7 +61,6 @@ class AccountTest {
     @Test
     @DisplayName("Cuenta de credito")
     void CredtAccountTest() {
-        Account account = new Account("Thony", new BigDecimal("1000.12345"));
         account.credit(new BigDecimal(100));
         assertNotNull(account.getCredit());
         assertEquals(1100, account.getCredit().intValue());
@@ -63,7 +70,6 @@ class AccountTest {
     @Test
     @DisplayName("Validar error insuficiente monto de la cuenta")
     void InsufficientFundsAccountExceptionTest() {
-        Account account = new Account("Thony", new BigDecimal("1000.12345"));
         Exception insufficientFunds = assertThrows(InsufficientFunds.class, () -> {
             account.debit(new BigDecimal(1500));
         });
@@ -120,5 +126,17 @@ class AccountTest {
                         .anyMatch(account -> account.getPerson().equals("Thony 1")),
                         () -> "No se encontro la cuenta con el nombre Thony 1.")
                 );
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "ENV", matches = "dev")
+    void enviromentDevTest() {
+
+    }
+
+    @Test
+    void imprSystemProperties() {
+        Properties properties = System.getProperties();
+        properties.forEach((k,v) -> System.out.println(k + ":" + v));
     }
 }
