@@ -90,17 +90,23 @@ class AccountTest {
 
         bank.transfer(account2, account1, new BigDecimal(500));
 
-        assertAll(() -> assertEquals("1000.8989", account2.getCredit().toPlainString()),
-                () -> assertEquals("3000", account1.getCredit().toPlainString()),
-                () -> assertEquals(2, bank.getAccounts().size()),
-                () -> assertEquals("Banco del estado", account1.getBank().getName()),
+        assertAll(() -> assertEquals("1000.8989", account2.getCredit().toPlainString(),
+                            () -> "El valor de credito de la cuenta2 no es el esperado."),
+                () -> assertEquals("3000", account1.getCredit().toPlainString(),
+                        () -> "El valor de credito de la cuenta 1 no es el esperado."),
+                () -> assertEquals(2, bank.getAccounts().size(),
+                        () -> "El total de cuentas asociados al banco no es el esperado."),
+                () -> assertEquals("Banco del estado", account1.getBank().getName(),
+                        () -> "La cuenta1 no esta asociado al banco esperado."),
                 () -> assertEquals("Thony 2", bank.getAccounts()
                         .stream()
                         .filter(account -> account.getPerson().equals("Thony 2"))
-                        .findFirst().get().getPerson()),
+                        .findFirst().get().getPerson(),
+                        () -> "La cuenta no tiene el nombre de la persona esperado"),
                 () -> assertTrue(bank.getAccounts()
                         .stream()
-                        .anyMatch(account -> account.getPerson().equals("Thony 1")))
+                        .anyMatch(account -> account.getPerson().equals("Thony 1")),
+                        () -> "No se encontro la cuenta con el nombre Thony 1.")
                 );
     }
 }
