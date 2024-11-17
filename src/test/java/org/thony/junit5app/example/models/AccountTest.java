@@ -1,6 +1,7 @@
 package org.thony.junit5app.example.models;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.thony.junit5app.example.exceptions.InsufficientFunds;
 
@@ -138,5 +139,15 @@ class AccountTest {
     void imprSystemProperties() {
         Properties properties = System.getProperties();
         properties.forEach((k,v) -> System.out.println(k + ":" + v));
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "ENVIROMENT", matches = "dev")
+    void envDevTest() {
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "ENVIROMENT", matches = "prod")
+    void envProdTest() {
     }
 }
