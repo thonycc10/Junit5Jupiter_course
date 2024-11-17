@@ -3,6 +3,8 @@ package org.thony.junit5app.example.models;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.thony.junit5app.example.exceptions.InsufficientFunds;
 
 import java.math.BigDecimal;
@@ -54,9 +56,18 @@ class AccountTest {
             assertEquals(account1, account2);
         }
 
+        @Test
+        @DisplayName("Validando credito a cuenta")
+        void DebitAccountTest() {
+            account.debit(new BigDecimal(100));
+            assertNotNull(account.getCredit());
+            assertEquals(900, account.getCredit().intValue());
+            assertEquals("900.12345", account.getCredit().toPlainString());
+        }
+
         @DisplayName("Validando credito a cuenta")
         @RepeatedTest(value = 5, name = "{displayName} - Repiticiones numero {currentRepetition} de {totalRepetitions}")
-        void DebitAccountTest(RepetitionInfo info) {
+        void DebitAccountRepeatTest(RepetitionInfo info) {
             if (info.getCurrentRepetition() == 3 ) {
                 System.out.println("estamos en la repeticion " + info.getCurrentRepetition());
             }
@@ -64,6 +75,15 @@ class AccountTest {
             assertNotNull(account.getCredit());
             assertEquals(900, account.getCredit().intValue());
             assertEquals("900.12345", account.getCredit().toPlainString());
+        }
+
+        @ParameterizedTest(name = "Numero {index} ejecutando con valor {0} - {argumentsWithNames}")
+        @ValueSource(strings = {"100", "200", "300", "500", "700", "1000"})
+        @DisplayName("Parametrizado - Validando credito a cuenta")
+        void DebitAccountParameterizedTest(String amount) {
+            account.debit(new BigDecimal(amount));
+            assertNotNull(account.getCredit());
+            assertTrue(account.getCredit().compareTo(BigDecimal.ZERO) > 0);
         }
 
         @Test
