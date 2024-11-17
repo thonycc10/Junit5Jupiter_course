@@ -5,7 +5,6 @@ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.thony.junit5app.example.exceptions.InsufficientFunds;
@@ -21,11 +20,17 @@ import static org.junit.jupiter.api.Assumptions.*;
 
 class AccountTest {
     Account account;
+    private TestInfo testInfo;
+    private TestReporter testReporter;
 
     @BeforeEach
-    void beforeEach() {
-        System.out.println("Iniciando el metodo de prueba.");
+    void beforeEach(TestInfo testInfo, TestReporter testReporter) {
         this.account = new Account("Thony", new BigDecimal("1000.12345"));
+        this.testInfo = testInfo;
+        this.testReporter = testReporter;
+        System.out.println("Iniciando el metodo de prueba.");
+        testReporter.publishEntry(" Ejecutando: " + testInfo.getDisplayName() + " " + testInfo.getTestMethod().orElse(null).getName()
+        + " con las etiquetas " + testInfo.getTags());
     }
 
     @AfterEach
@@ -41,6 +46,10 @@ class AccountTest {
         @DisplayName("el nombre de la cuenta corriente")
         void NameAccountTest() {
             // izd: esperado - der: real
+            System.out.println(testInfo.getTags());
+            if (testInfo.getTags().contains("Bank")) {
+                System.out.println("hacer algo con la etiqueta cuenta");
+            }
             assertEquals("Thony", account.getPerson());
             assertTrue(account.getPerson().equals("Thony"));
         }
