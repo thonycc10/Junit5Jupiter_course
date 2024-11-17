@@ -1,5 +1,7 @@
 package org.thony.junit5app.example.models;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.thony.junit5app.example.exceptions.InsufficientFunds;
 
@@ -11,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AccountTest {
 
     @Test
+    @DisplayName("Probando el nombre de la cuenta corriente")
     void NameAccountTest() {
         Account account = new Account("Thony", new BigDecimal("1000.12345"));
 
@@ -20,6 +23,7 @@ class AccountTest {
     }
 
     @Test
+    @DisplayName("Probando credito de la cuenta")
     void CreditAccountTest() {
         Account account = new Account("Thony", new BigDecimal("1000.12345"));
         assertEquals(1000.12345, account.getCredit().doubleValue());
@@ -28,6 +32,7 @@ class AccountTest {
     }
 
     @Test
+    @DisplayName("Probando igualdad de dos cuentas")
     void ReferenceAccountTest() {
         Account account1 = new Account("Thony", new BigDecimal("8900.9997"));
         Account account2 = new Account("Thony", new BigDecimal("8900.9997"));
@@ -36,6 +41,7 @@ class AccountTest {
     }
 
     @Test
+    @DisplayName("Probando igualdad de dos cuentas")
     void DebitAccountTest() {
         Account account = new Account("Thony", new BigDecimal("1000.12345"));
         account.debit(new BigDecimal(100));
@@ -45,6 +51,7 @@ class AccountTest {
     }
 
     @Test
+    @DisplayName("Cuenta de credito")
     void CredtAccountTest() {
         Account account = new Account("Thony", new BigDecimal("1000.12345"));
         account.credit(new BigDecimal(100));
@@ -54,6 +61,7 @@ class AccountTest {
     }
 
     @Test
+    @DisplayName("Validar error insuficiente monto de la cuenta")
     void InsufficientFundsAccountExceptionTest() {
         Account account = new Account("Thony", new BigDecimal("1000.12345"));
         Exception insufficientFunds = assertThrows(InsufficientFunds.class, () -> {
@@ -66,7 +74,10 @@ class AccountTest {
     }
 
     @Test
+    @Disabled
+    @DisplayName("Transferencia de dinero a otra cuenta")
     void TransferFoundsAccountTest() {
+        fail();
         Account account1 = new Account("Thony 1", new BigDecimal("2500"));
         Account account2 = new Account("Thony 2", new BigDecimal("1500.8989"));
 
@@ -78,6 +89,7 @@ class AccountTest {
     }
 
     @Test
+    @DisplayName("Añadir cuentas al banco")
     void BankAndAccountTest() {
         Account account1 = new Account("Thony 1", new BigDecimal("2500"));
         Account account2 = new Account("Thony 2", new BigDecimal("1500.8989"));
