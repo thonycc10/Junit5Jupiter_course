@@ -10,9 +10,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.thony.junit5app.example.exceptions.InsufficientFunds;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
@@ -36,6 +38,8 @@ class AccountTest {
     @AfterEach
     void afterEach() {
         System.out.println("Finalizo el metodo de prueba.");
+        testReporter.publishEntry(" Ejecutando: " + testInfo.getDisplayName() + " " + testInfo.getTestMethod().orElse(null).getName()
+                + " con las etiquetas " + testInfo.getTags());
     }
 
     @Nested
@@ -249,5 +253,25 @@ class AccountTest {
         }
     }
 
+    @Nested
+    @Tag("Timeout")
+    class TimeOutTest {
+        @Test
+        @Timeout(1)
+        void timeoutTest() throws InterruptedException {
+            TimeUnit.MILLISECONDS.sleep(100);
+        }
+
+        @Test
+        @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
+        void timeOutTest2() throws InterruptedException {
+            TimeUnit.MILLISECONDS.sleep(1000);
+        }
+
+        @Test
+        void timeOutTest3() {
+            assertTimeout(Duration.ofSeconds(5), () -> TimeUnit.MILLISECONDS.sleep(4000));
+        }
+    }
 
 }
