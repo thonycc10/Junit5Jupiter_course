@@ -2,6 +2,8 @@ package org.thony.junit5app.example.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.thony.junit5app.example.models.Examen;
 import org.thony.junit5app.example.repositories.ExamenRepository;
 import org.thony.junit5app.example.repositories.QuestionRepository;
@@ -12,18 +14,25 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 
 class ExamenServiceImplTest {
+    @Mock
     ExamenRepository examenRepository;
+    @Mock
     QuestionRepository questionRepository;
-    ExamenService examenService;
+
+    @InjectMocks
+    ExamenServiceImpl examenService;
 
     @BeforeEach
     void setUp() {
-        this.examenRepository = mock(ExamenRepository.class);
-        this.questionRepository = mock(QuestionRepository.class);
-        this.examenService = new ExamenServiceImpl(examenRepository, questionRepository);
+        openMocks(this); // inyecta los mocks directo al servicio
+
+//        this.examenRepository = mock(ExamenRepository.class);
+//        this.questionRepository = mock(QuestionRepository.class);
+//        this.examenService = new ExamenServiceImpl(examenRepository, questionRepository);
     }
 
     @Test
