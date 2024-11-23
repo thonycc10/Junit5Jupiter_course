@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 import org.thony.junit5app.example.models.Examen;
 import org.thony.junit5app.example.repositories.ExamenRepository;
 import org.thony.junit5app.example.repositories.QuestionRepository;
@@ -94,11 +96,26 @@ class ExamenServiceImplTest {
 
     @Test
     void saveExamenTest() {
+        // Given
         Examen newExamen = Datos.EXAMEN;
         newExamen.setPreguntas(Datos.PREGUNTAS);
 
-        when(examenRepository.save(any(Examen.class))).thenReturn(Datos.EXAMEN);
+        // La idea es poder añadir una secuencia en grabar un id
+        when(examenRepository.save(any(Examen.class))).then(new Answer<Examen>() {
+            Long secuencia = 1L;
+
+            @Override
+            public Examen answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Examen examen = invocationOnMock.getArgument(0);
+                examen.setId(secuencia++);
+                return examen;
+            }
+        });
+
+        // when
         Examen examen = examenService.save(newExamen);
+
+        // then
         assertNotNull(examen);
         assertEquals(1L, examen.getId());
         assertEquals("Fisica", examen.getNombre());
