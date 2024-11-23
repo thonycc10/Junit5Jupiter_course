@@ -33,4 +33,12 @@ public class ExamenServiceImpl implements ExamenService {
         }
         return examen;
     }
+
+    @Override
+    public Examen save(Examen examen) {
+        if (!examen.getPreguntas().isEmpty()) { // newExamen.setPreguntas(Datos.PREGUNTAS);
+            questionRepository.saveList(examen.getPreguntas()); // verify(questionRepository).saveList(anyList());
+        }
+        return examenRepository.save(examen); // verify(examenRepository).save(any(Examen.class));
+    }
 }

@@ -10,4 +10,5 @@ public class Datos {
                                                        new Examen(7L, "Algebra"));
 
     public final static  List<String> PREGUNTAS = List.of("Logica", "Algoritmos", "Variables", "Operaciones");
+    public final static  Examen EXAMEN = new Examen(1L, "Fisica");
 }

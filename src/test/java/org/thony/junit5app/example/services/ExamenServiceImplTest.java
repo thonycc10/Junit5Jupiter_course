@@ -19,6 +19,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class) // inyecta los mocks directo al servicio
 class ExamenServiceImplTest {
+
     @Mock
     ExamenRepository examenRepository;
     @Mock
@@ -88,5 +89,21 @@ class ExamenServiceImplTest {
 //        verify ayuda a verificar que se ejecute el metodo si se quita en el servicio real fallaria.
         verify(examenRepository).findAll();
         verify(questionRepository).findQuestionByExamenId(anyLong());
+    }
+
+
+    @Test
+    void saveExamenTest() {
+        Examen newExamen = Datos.EXAMEN;
+        newExamen.setPreguntas(Datos.PREGUNTAS);
+
+        when(examenRepository.save(any(Examen.class))).thenReturn(Datos.EXAMEN);
+        Examen examen = examenService.save(newExamen);
+        assertNotNull(examen);
+        assertEquals(1L, examen.getId());
+        assertEquals("Fisica", examen.getNombre());
+
+        verify(examenRepository).save(any(Examen.class));
+        verify(questionRepository).saveList(anyList());
     }
 }
