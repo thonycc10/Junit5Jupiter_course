@@ -11,8 +11,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 class ExamenServiceImplTest {
@@ -53,11 +52,33 @@ class ExamenServiceImplTest {
     }
 
     @Test
-    void findExamenWithQuestionByIdExamen() {
+    void findExamenWithQuestionByIdExamenTest() {
         when(examenRepository.findAll()).thenReturn(Datos.EXAMENS);
         when(questionRepository.findQuestionByExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
         Examen examen = examenService.findExamenWithQuestionByIdExamen("Matematicas");
-
         assertEquals(4, examen.getPreguntas().size());
+    }
+
+    @Test
+    void findExamenWithQuestionByIdExamenVerifyTest() {
+        when(examenRepository.findAll()).thenReturn(Datos.EXAMENS);
+        when(questionRepository.findQuestionByExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        Examen examen = examenService.findExamenWithQuestionByIdExamen("Matematicas");
+        assertEquals(4, examen.getPreguntas().size());
+
+//        verify ayuda a verificar que se ejecute el metodo si se quita en el servicio real fallaria.
+        verify(examenRepository).findAll();
+        verify(questionRepository).findQuestionByExamenId(anyLong());
+    }
+
+    @Test
+    void notfindExamenWithQuestionByIdExamenVerifyTest() {
+        when(examenRepository.findAll()).thenReturn(Collections.emptyList());
+        when(questionRepository.findQuestionByExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        Examen examen = examenService.findExamenWithQuestionByIdExamen("Matematicas2");
+        assertNull(examen);
+//        verify ayuda a verificar que se ejecute el metodo si se quita en el servicio real fallaria.
+        verify(examenRepository).findAll();
+        verify(questionRepository).findQuestionByExamenId(anyLong());
     }
 }
