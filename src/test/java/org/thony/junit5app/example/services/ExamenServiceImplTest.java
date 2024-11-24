@@ -95,37 +95,6 @@ class ExamenServiceImplTest {
         verify(questionRepository).findQuestionByExamenId(anyLong());
     }
 
-
-    @Test
-    void saveExamenTest() {
-        // Given
-        Examen newExamen = Datos.EXAMEN;
-        newExamen.setPreguntas(Datos.PREGUNTAS);
-
-        // La idea es poder añadir una secuencia en grabar un id
-        when(examenRepository.save(any(Examen.class))).then(new Answer<Examen>() {
-            Long secuencia = 1L;
-
-            @Override
-            public Examen answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Examen examen = invocationOnMock.getArgument(0);
-                examen.setId(secuencia++);
-                return examen;
-            }
-        });
-
-        // when
-        Examen examen = examenService.save(newExamen);
-
-        // then
-        assertNotNull(examen);
-        assertEquals(1L, examen.getId());
-        assertEquals("Fisica", examen.getNombre());
-
-        verify(examenRepository).save(any(Examen.class));
-        verify(questionRepository).saveList(anyList());
-    }
-
     @Test
     void handlerExceptionTest() {
         when(examenRepository.findAll()).thenReturn(Datos.EXAMENS_NULL_IDS);
@@ -199,5 +168,61 @@ class ExamenServiceImplTest {
         doThrow(IllegalArgumentException.class).when(questionRepository).saveList(anyList());
 
         assertThrows(IllegalArgumentException.class, () -> examenService.save(examen));
+    }
+
+    @Test
+    void saveExamenTest() {
+        // Given
+        Examen newExamen = Datos.EXAMEN;
+        newExamen.setPreguntas(Datos.PREGUNTAS);
+
+        // La idea es poder añadir una secuencia en grabar un id
+//        when(examenRepository.save(any(Examen.class))).then(new Answer<Examen>() {
+//            Long secuencia = 1L;
+//
+//            @Override
+//            public Examen answer(InvocationOnMock invocationOnMock) throws Throwable {
+//                Examen examen = invocationOnMock.getArgument(0);
+//                examen.setId(secuencia++);
+//                return examen;
+//            }
+//        });
+
+        doAnswer(invocationOnMock -> {
+            Long secuencia = 1L;
+
+            Examen examen = invocationOnMock.getArgument(0);
+            examen.setId(secuencia++);
+            return examen;
+        }).when(examenRepository).save(any(Examen.class));
+
+        // when
+        Examen examen = examenService.save(newExamen);
+
+        // then
+        assertNotNull(examen);
+        assertEquals(1L, examen.getId());
+        assertEquals("Fisica", examen.getNombre());
+
+        verify(examenRepository).save(any(Examen.class));
+        verify(questionRepository).saveList(anyList());
+    }
+
+    @Test
+    void doAnswerTest() {
+        when(examenRepository.findAll()).thenReturn(Datos.EXAMENS);
+
+        doAnswer(invocationOnMock -> {
+            Long id = invocationOnMock.getArgument(0);
+            return id == 5L ? Datos.PREGUNTAS : Collections.EMPTY_LIST;
+        }).when(questionRepository).findQuestionByExamenId(anyLong());
+
+        Examen examen = examenService.findExamenWithQuestionByIdExamen("Matematicas");
+        assertEquals(4, examen.getPreguntas().size());
+        assertEquals(5L, examen.getId());
+        assertTrue(examen.getPreguntas().contains("Variables"));
+        assertEquals("Matematicas", examen.getNombre());
+
+        verify(questionRepository).findQuestionByExamenId(anyLong());
     }
 }
