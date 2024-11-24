@@ -30,6 +30,7 @@ public class ExamenServiceImpl implements ExamenService {
         if (examenOptional.isPresent()) {
             examen = examenOptional.orElseThrow();
             examen.setPreguntas(questionRepository.findQuestionByExamenId(examen.getId()));
+            questionRepository.findQuestionByExamenId(examen.getId());
         }
         return examen;
     }
