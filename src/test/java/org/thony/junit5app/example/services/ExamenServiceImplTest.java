@@ -4,13 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 import org.thony.junit5app.example.models.Examen;
 import org.thony.junit5app.example.repositories.ExamenRepository;
+import org.thony.junit5app.example.repositories.ExamenRepositoryImpl;
 import org.thony.junit5app.example.repositories.QuestionRepository;
-import org.thony.junit5app.example.util.Datos;
+import org.thony.junit5app.example.repositories.QuestionRepositoryImpl;
+import org.thony.junit5app.example.utils.Datos;
 
 import java.util.*;
 
@@ -22,9 +22,9 @@ import static org.mockito.Mockito.*;
 class ExamenServiceImplTest {
 
     @Mock
-    ExamenRepository examenRepository;
+    ExamenRepositoryImpl examenRepository;
     @Mock
-    QuestionRepository questionRepository;
+    QuestionRepositoryImpl questionRepository;
 
     @InjectMocks
     ExamenServiceImpl examenService;
@@ -224,5 +224,18 @@ class ExamenServiceImplTest {
         assertEquals("Matematicas", examen.getNombre());
 
         verify(questionRepository).findQuestionByExamenId(anyLong());
+    }
+
+    @Test
+    void doCallRealMethodTest() {
+        when(examenRepository.findAll()).thenReturn(Datos.EXAMENS);
+        // realiza un mock del method
+//        when(questionRepository.findQuestionByExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        // ingresa al metodo
+        doCallRealMethod().when(questionRepository).findQuestionByExamenId(anyLong());
+
+        Examen examen = examenService.findExamenWithQuestionByIdExamen("Matematicas");
+        assertEquals(5L, examen.getId());
+        assertEquals("Matematicas", examen.getNombre());
     }
 }

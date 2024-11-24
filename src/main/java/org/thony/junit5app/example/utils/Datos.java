@@ -1,4 +1,4 @@
-package org.thony.junit5app.example.util;
+package org.thony.junit5app.example.utils;
 
 import org.thony.junit5app.example.models.Examen;
 
