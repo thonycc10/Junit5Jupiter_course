@@ -135,4 +135,16 @@ class ExamenServiceImplTest {
         verify(examenRepository).findAll();
         verify(questionRepository).findQuestionByExamenId(isNull());
     }
+
+    @Test
+    void ArgumentMatchesTest() {
+        when(examenRepository.findAll()).thenReturn(Datos.EXAMENS);
+        when(questionRepository.findQuestionByExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        examenService.findExamenWithQuestionByIdExamen("Matematicas");
+
+        verify(examenRepository).findAll();
+        verify(questionRepository).findQuestionByExamenId(argThat(arg -> arg != null && arg >= 5L));
+        verify(questionRepository).findQuestionByExamenId(argThat(arg -> arg != null && arg.equals(5L)));
+        verify(questionRepository).findQuestionByExamenId(eq(5L));
+    }
 }
