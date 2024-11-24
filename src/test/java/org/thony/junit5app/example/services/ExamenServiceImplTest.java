@@ -3,9 +3,7 @@ package org.thony.junit5app.example.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatcher;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
@@ -30,6 +28,9 @@ class ExamenServiceImplTest {
 
     @InjectMocks
     ExamenServiceImpl examenService;
+
+    @Captor
+    ArgumentCaptor<Long> captor;
 
     @BeforeEach
     void setUp() {
@@ -174,5 +175,18 @@ class ExamenServiceImplTest {
                     "arg=" + arg +
                     '}' + " " + "es para un mensaje personalizado de error, que imprime mockito en caso falle el test";
         }
+    }
+
+    @Test
+    void argumentCaptureTest() {
+        when(examenRepository.findAll()).thenReturn(Datos.EXAMENS);
+        when(questionRepository.findQuestionByExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+
+        examenService.findExamenWithQuestionByIdExamen("Matematicas");
+
+//        ArgumentCaptor<Long> captor = ArgumentCaptor.forClass(Long.class);
+        verify(questionRepository).findQuestionByExamenId(captor.capture());
+
+        assertEquals(5L, captor.getValue());
     }
 }
