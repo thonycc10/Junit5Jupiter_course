@@ -13,8 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class) // inyecta los mocks directo al servicio
 class ExamenServiceImplSpyTest {
@@ -38,5 +37,8 @@ class ExamenServiceImplSpyTest {
         assertEquals("Matematicas", examne.getNombre());
         assertEquals(1, examne.getPreguntas().size());
         assertTrue(examne.getPreguntas().contains("Aritmetica"));
+
+        verify(examenRepository).findAll();
+        verify(questionRepository).findQuestionByExamenId(anyLong());
     }
 }
