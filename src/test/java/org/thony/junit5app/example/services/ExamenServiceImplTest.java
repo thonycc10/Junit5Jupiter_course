@@ -3,6 +3,7 @@ package org.thony.junit5app.example.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -146,5 +147,32 @@ class ExamenServiceImplTest {
         verify(questionRepository).findQuestionByExamenId(argThat(arg -> arg != null && arg >= 5L));
         verify(questionRepository).findQuestionByExamenId(argThat(arg -> arg != null && arg.equals(5L)));
         verify(questionRepository).findQuestionByExamenId(eq(5L));
+    }
+
+    @Test
+    void ArgumentMatches2Test() {
+        when(examenRepository.findAll()).thenReturn(Datos.EXAMENS_NEGATIVES);
+        when(questionRepository.findQuestionByExamenId(anyLong())).thenReturn(Datos.PREGUNTAS);
+        examenService.findExamenWithQuestionByIdExamen("Matematicas");
+
+        verify(examenRepository).findAll();
+        verify(questionRepository).findQuestionByExamenId(argThat(new MiArgsMatchers()));
+    }
+
+    public static class MiArgsMatchers implements ArgumentMatcher<Long> {
+        private Long arg;
+
+        @Override
+        public boolean matches(Long arg) {
+            this.arg = arg;
+            return arg != null && arg > 0;
+        }
+
+        @Override
+        public String toString() {
+            return "MiArgsMatchers{" +
+                    "arg=" + arg +
+                    '}' + " " + "es para un mensaje personalizado de error, que imprime mockito en caso falle el test";
+        }
     }
 }
