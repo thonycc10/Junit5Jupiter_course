@@ -7,6 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.thony.junit5app.example.models.Examen;
 import org.thony.junit5app.example.repositories.ExamenRepositoryImpl;
 import org.thony.junit5app.example.repositories.QuestionRepositoryImpl;
+import org.thony.junit5app.example.utils.Datos;
 
 import java.util.List;
 
@@ -40,5 +41,31 @@ class ExamenServiceImplSpyTest {
 
         verify(examenRepository).findAll();
         verify(questionRepository).findQuestionByExamenId(anyLong());
+    }
+
+    @Test
+    void orderMock() {
+        when(examenRepository.findAll()).thenReturn(Datos.EXAMENS);
+
+        examenService.findExamenWithQuestionByIdExamen("Matematicas");
+        examenService.findExamenWithQuestionByIdExamen("Algebra");
+
+        InOrder inOrder = inOrder(examenRepository, questionRepository);
+        inOrder.verify(questionRepository).findQuestionByExamenId(5L);
+        inOrder.verify(questionRepository).findQuestionByExamenId(7L);
+    }
+
+    @Test
+    void orderMock2() {
+        when(examenRepository.findAll()).thenReturn(Datos.EXAMENS);
+
+        examenService.findExamenWithQuestionByIdExamen("Matematicas");
+        examenService.findExamenWithQuestionByIdExamen("Algebra");
+
+        InOrder inOrder = inOrder(examenRepository, questionRepository);
+        inOrder.verify(examenRepository).findAll();
+        inOrder.verify(questionRepository).findQuestionByExamenId(5L);
+        inOrder.verify(examenRepository).findAll();
+        inOrder.verify(questionRepository).findQuestionByExamenId(7L);
     }
 }
