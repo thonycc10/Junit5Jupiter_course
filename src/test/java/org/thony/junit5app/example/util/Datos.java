@@ -9,6 +9,10 @@ public class Datos {
                                                        new Examen(6L, "Razonamiento Matematico"),
                                                        new Examen(7L, "Algebra"));
 
+    public final static List<Examen> EXAMENS_NULL_IDS = List.of(new Examen(null, "Matematicas"),
+                                                       new Examen(null, "Razonamiento Matematico"),
+                                                       new Examen(null, "Algebra"));
+
     public final static  List<String> PREGUNTAS = List.of("Logica", "Algoritmos", "Variables", "Operaciones");
     public final static  Examen EXAMEN = new Examen(null, "Fisica");
 }
